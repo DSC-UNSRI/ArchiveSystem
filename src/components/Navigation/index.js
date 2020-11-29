@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { AuthUserContext } from '../Session';
 import SignOutButton from '../SignOut';
+import {SignInGoogle} from '../SignIn';
 import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
 
@@ -47,6 +48,9 @@ const NavigationNonAuth = () => (
     </li>
     <li>
       <Link to={ROUTES.SIGN_IN}>Sign In</Link>
+    </li>
+    <li>
+      <SignInGoogle />
     </li>
   </ul>
 );
