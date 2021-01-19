@@ -18,7 +18,6 @@ class Firebase {
     /* Helper */
 
     this.fieldValue = app.firestore.FieldValue;
-    this.emailAuthProvider = app.auth.EmailAuthProvider;
 
     /* Firebase APIs */
 
@@ -28,53 +27,31 @@ class Firebase {
     /* Social Sign In Method Provider */
 
     this.googleProvider = new app.auth.GoogleAuthProvider();
-    this.facebookProvider = new app.auth.FacebookAuthProvider();
-    this.twitterProvider = new app.auth.TwitterAuthProvider();
   }
 
   // *** Auth API ***
-
-  doCreateUserWithEmailAndPassword = (email, password) =>
-    this.auth.createUserWithEmailAndPassword(email, password);
-
-  doSignInWithEmailAndPassword = (email, password) =>
-    this.auth.signInWithEmailAndPassword(email, password);
-
   doSignInWithGoogle = () =>
     this.auth.signInWithPopup(this.googleProvider);
 
-  doSignInWithFacebook = () =>
-    this.auth.signInWithPopup(this.facebookProvider);
-
-  doSignInWithTwitter = () =>
-    this.auth.signInWithPopup(this.twitterProvider);
-
   doSignOut = () => this.auth.signOut();
-
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
-
-  doSendEmailVerification = () =>
-    this.auth.currentUser.sendEmailVerification({
-      url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
-    });
-
-  doPasswordUpdate = password =>
-    this.auth.currentUser.updatePassword(password);
 
   // *** Merge Auth and DB User API *** //
 
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        this.user(authUser.uid)
-          .get()
-          .then(snapshot => {
-            const dbUser = snapshot.data();
+        Promise.all([
+          this.user(authUser.uid).get(),
+          this.admin(authUser.uid).get()])
+        .then(([user, admin]) => {
+          const dbUser = user.data();
+          let dbAdmin = admin.data();
 
-            // default empty roles
-            if (!dbUser.roles) {
-              dbUser.roles = {};
-            }
+          if (!dbAdmin) {
+            dbAdmin = {}
+          } else if (!dbAdmin.roles){
+            dbAdmin.roles = {};
+          }
 
             // merge auth and db user
             authUser = {
@@ -83,10 +60,11 @@ class Firebase {
               emailVerified: authUser.emailVerified,
               providerData: authUser.providerData,
               ...dbUser,
+              ...dbAdmin
             };
 
             next(authUser);
-          });
+        })
       } else {
         fallback();
       }
@@ -96,7 +74,16 @@ class Firebase {
 
   user = uid => this.db.doc(`users/${uid}`);
 
+  admin = uid => this.db.doc(`admins/${uid}`);
+
   users = () => this.db.collection('users');
+  
+  
+  // *** Event API ***
+
+  events = () => this.db.collection('events');
+  
+  event = id => this.db.doc(`events/${id}`);
 
   // *** Message API ***
 
