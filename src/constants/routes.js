@@ -8,4 +8,5 @@ export const ADMIN = '/admin';
 export const ADMIN_DETAILS = '/admin/:id';
 
 export const EVENT = '/event';
+export const EVENT_ADD = '/event/add';
 export const EVENT_DETAILS = '/event/:id';

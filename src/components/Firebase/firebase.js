@@ -1,6 +1,8 @@
 import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
+import { createStore } from 'redux';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -16,17 +18,19 @@ class Firebase {
     app.initializeApp(config);
 
     /* Helper */
-
     this.fieldValue = app.firestore.FieldValue;
+    this.timestamp = app.firestore.Timestamp;
 
     /* Firebase APIs */
-
     this.auth = app.auth();
     this.db = app.firestore();
+    this.storage = app.storage();
 
     /* Social Sign In Method Provider */
-
     this.googleProvider = new app.auth.GoogleAuthProvider();
+
+    /* Upload Monitor */
+    this.uploadMonitor = createStore(this.uploadReducer);
   }
 
   // *** Auth API ***
@@ -35,23 +39,49 @@ class Firebase {
 
   doSignOut = () => this.auth.signOut();
 
-  // *** Merge Auth and DB User API *** //
+  // *** Broadcast ***
+  doPasswordReset = (email, action) => this.auth.sendPasswordResetEmail(email, { ...action, handleCodeInApp: true });
 
+  // *** Upload API ***
+  uploadReducer = (state = new Map(), action) => {
+    switch (action.type) {
+      case 'dispatched':
+        return state.set(action.id, action.data)
+      default:
+        return state
+    }
+  }
+
+  uploadTask = (upload, path, next) =>
+    this.uploadMonitor.dispatch({
+      type: 'dispatched',
+      id: path,
+      data: {
+        task: this.storage.ref(path).put(upload),
+        enum: {
+          event: app.storage.TaskEvent,
+          states: app.storage.TaskState
+        }
+      }
+    });
+  //     () => {
+  //       this.storage.ref('dokumentasi')
+  //         .child(upload.name).getDownloadURL()
+  //         .then(url => next(url));
+  //     }
+  //   );
+
+  // *** Merge Auth and DB User API *** //
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        Promise.all([
-          this.user(authUser.uid).get(),
-          this.admin(authUser.uid).get()])
-        .then(([user, admin]) => {
-          const dbUser = user.data();
-          let dbAdmin = admin.data();
+        this.admin(authUser.uid).get()
+          .then(admin => {
+            let dbAdmin = admin.data();
 
-          if (!dbAdmin) {
-            dbAdmin = {}
-          } else if (!dbAdmin.roles){
-            dbAdmin.roles = {};
-          }
+            if (!dbAdmin) {
+              dbAdmin = { roles: {} }
+            }
 
             // merge auth and db user
             authUser = {
@@ -59,34 +89,37 @@ class Firebase {
               email: authUser.email,
               emailVerified: authUser.emailVerified,
               providerData: authUser.providerData,
-              ...dbUser,
               ...dbAdmin
             };
 
             next(authUser);
-        })
+          })
       } else {
         fallback();
       }
     });
 
-  // *** User API ***
+  // *** Batch Write ***
+  batch = () => this.db.batch();
 
+  // *** User API ***
   user = uid => this.db.doc(`users/${uid}`);
 
   admin = uid => this.db.doc(`admins/${uid}`);
 
   users = () => this.db.collection('users');
-  
-  
-  // *** Event API ***
 
+
+  // *** Event API ***
   events = () => this.db.collection('events');
-  
+
   event = id => this.db.doc(`events/${id}`);
 
-  // *** Message API ***
+  eventMeta = id => this.db.doc(`events/${id}`).collection('private').doc('meta');
 
+
+
+  // *** Message API ***
   message = uid => this.db.doc(`messages/${uid}`);
 
   messages = () => this.db.collection('messages');

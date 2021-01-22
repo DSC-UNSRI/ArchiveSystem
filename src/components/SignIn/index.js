@@ -31,14 +31,13 @@ class SignInGoogleBase extends Component {
           {
             username: socialAuthUser.user.displayName,
             email: socialAuthUser.user.email,
-            roles: {},
           },
           { merge: true },
         );
       })
       .then(() => {
         this.setState({ error: null });
-        this.props.history.push(ROUTES.HOME);
+        this.props.history.push(ROUTES.LANDING);
       })
       .catch(error => {
         if (error.code === ERROR_CODE_ACCOUNT_EXISTS) {
