@@ -1,15 +1,14 @@
-import React from 'react';
+import { Component } from 'react';
 
 import { withFirebase } from '../Firebase';
-import './monitor';
 import Monitor from './monitor';
 
-class UploadMonitor extends React.Component {
+class UploadMonitor extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            Uploads: null
+            uploads: null
         }
     }
 
@@ -17,7 +16,7 @@ class UploadMonitor extends React.Component {
         const monitorListener = this.props.firebase.uploadMonitor;
         this.listener = monitorListener.subscribe(() => {
             this.setState({
-                Uploads: monitorListener.getState()
+                uploads: monitorListener.getState()
             })
         })
     }
@@ -26,12 +25,23 @@ class UploadMonitor extends React.Component {
         this.listener();
     }
 
+    removeMonitor = id => {
+        this.props.firebase.uploadMonitor.dispatch({
+            type: 'remove',
+            id
+        });
+    }
+
+    reupload = (id, file, group) => this.props.firebase.uploadTask(file, id, group)
+
     renderMonitors() {
-        const { Uploads } = this.state;
+        const { uploads } = this.state;
         const monitors = [];
         {
-            Uploads && Uploads.forEach((value, key) => monitors.push(
-                <Monitor id={key} upload={value} />
+            (uploads && uploads.size > 0) && uploads.forEach((value, key) => monitors.push(
+                <Monitor key={key} id={key} upload={value}
+                    removeFun={this.removeMonitor}
+                    reuploadFun={this.reupload} />
             ))
         }
         return monitors;
@@ -47,5 +57,7 @@ class UploadMonitor extends React.Component {
         )
     }
 }
+
+export {Monitor};
 
 export default withFirebase(UploadMonitor);

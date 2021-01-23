@@ -10,24 +10,34 @@ class Monitor extends React.Component {
         }
     }
 
+    cancelMonitor = () => {
+        this.props.upload.task.cancel()
+        this.props.removeFun(this.props.id)
+    }
+
+    removeMonitor = () => this.props.removeFun(this.props.id)
+
+    reupload = () => this.props.reuploadFun(this.props.id, this.props.upload.file, this.props.upload.group)
+
     componentDidMount() {
         this.listener = this.props.upload.task.on(
-            this.props.upload.enum.event.STATE_CHANGED,
+            this.props.upload.enums.event.STATE_CHANGED,
             snapshot => {
                 this.setState({
                     progress: Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100),
-                    mode: this.props.upload.enum.states.RUNNING
+                    mode: snapshot.state
                 });
             },
             error => {
                 this.setState({
-                    mode: this.props.upload.enum.states.ERROR
+                    mode: this.props.upload.enums.states.ERROR
                 });
             },
             complete => {
                 this.setState({
-                    mode: this.props.upload.enum.states.SUCCESS
+                    mode: this.props.upload.enums.states.SUCCESS
                 });
+                this.listener()
             }
         )
     }
@@ -37,11 +47,14 @@ class Monitor extends React.Component {
     }
 
     render() {
-        const { progress } = this.state;
+        const { progress, mode } = this.state;
         return (
-            <li key={this.id}>
-                <p>{this.props.id}: {progress}%</p>
-                <button></button>
+            <li key={this.props.id}>
+                <p>{this.props.upload.file.name}: {progress}%</p>
+                <p>{mode}</p>
+                {(mode == this.props.upload.enums.states.RUNNING) && (<button onClick={this.cancelMonitor}>Cancel</button>)}
+                {(mode == this.props.upload.enums.states.SUCCESS) && (<button onClick={this.removeMonitor}>X</button>)}
+                {(mode == this.props.upload.enums.states.ERROR) && (<button onClick={this.reupload}>Retry</button>)}
             </li>
         )
     }

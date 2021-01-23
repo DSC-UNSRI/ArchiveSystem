@@ -42,35 +42,6 @@ class Firebase {
   // *** Broadcast ***
   doPasswordReset = (email, action) => this.auth.sendPasswordResetEmail(email, { ...action, handleCodeInApp: true });
 
-  // *** Upload API ***
-  uploadReducer = (state = new Map(), action) => {
-    switch (action.type) {
-      case 'dispatched':
-        return state.set(action.id, action.data)
-      default:
-        return state
-    }
-  }
-
-  uploadTask = (upload, path, next) =>
-    this.uploadMonitor.dispatch({
-      type: 'dispatched',
-      id: path,
-      data: {
-        task: this.storage.ref(path).put(upload),
-        enum: {
-          event: app.storage.TaskEvent,
-          states: app.storage.TaskState
-        }
-      }
-    });
-  //     () => {
-  //       this.storage.ref('dokumentasi')
-  //         .child(upload.name).getDownloadURL()
-  //         .then(url => next(url));
-  //     }
-  //   );
-
   // *** Merge Auth and DB User API *** //
   onAuthUserListener = (next, fallback) =>
     this.auth.onAuthStateChanged(authUser => {
@@ -116,6 +87,37 @@ class Firebase {
   event = id => this.db.doc(`events/${id}`);
 
   eventMeta = id => this.db.doc(`events/${id}`).collection('private').doc('meta');
+
+
+  // *** Upload API ***
+  uploadReducer = (state = new Map(), action) => {
+    switch (action.type) {
+      case 'add':
+        return state.set(action.id, action.data)
+      case 'remove':
+        state.delete(action.id)
+        return state
+      default:
+        return state
+    }
+  }
+
+  uploadTask = (upload, path, group = null) =>
+    this.uploadMonitor.dispatch({
+      type: 'add',
+      id: path,
+      data: {
+        group,
+        file: upload,
+        task: this.storage.ref(path).put(upload),
+        enums: {
+          event: app.storage.TaskEvent,
+          states: app.storage.TaskState
+        }
+      }
+    });
+
+  getDocumentation = id => this.storage.ref(`public/dokumentasi/${id}`)
 
 
 

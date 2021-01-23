@@ -3,7 +3,9 @@ import { Switch, Route } from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { withAuthorization } from '../Session';
-import { EventLists, EventItems, EventItemAdd } from './Event';
+import EventItemAdd from './eventAdd';
+import EventItems from './eventItem';
+import EventLists from './eventList';
 import * as ROLES from '../../constants/roles';
 import * as ROUTES from '../../constants/routes';
 
