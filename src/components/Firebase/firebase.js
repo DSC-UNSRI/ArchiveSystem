@@ -82,9 +82,17 @@ class Firebase {
 
 
   // *** Event API ***
-  events = () => this.db.collection('events');
+  events = () => this.db.collection('events').withConverter({
+    toFirestore: post => post,
+    fromFirestore: (snapshot, options) => {
+      const data = snapshot.data(options);
+      const calendar = new Date(data.date.seconds * 1000).toLocaleString().split(RegExp('\/|, '));
+      const datelocale = calendar[2] + '-' + calendar[1] + '-' + calendar[0] + 'T' + calendar[3];
+      return { ...data, datelocale };
+    }
+  });
 
-  event = id => this.db.doc(`events/${id}`);
+  event = id => this.events().doc(id);
 
   eventMeta = id => this.db.doc(`events/${id}`).collection('private').doc('meta');
 
