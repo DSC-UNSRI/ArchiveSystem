@@ -13,10 +13,10 @@ class UploadMonitor extends Component {
     }
 
     componentDidMount() {
-        const monitorListener = this.props.firebase.uploadMonitor;
+        const monitorListener = this.props.firebase.store;
         this.listener = monitorListener.subscribe(() => {
             this.setState({
-                uploads: monitorListener.getState()
+                uploads: monitorListener.getState().uploadReducer
             })
         })
     }
@@ -26,13 +26,13 @@ class UploadMonitor extends Component {
     }
 
     removeMonitor = id => {
-        this.props.firebase.uploadMonitor.dispatch({
+        this.props.firebase.store.dispatch({
             type: 'remove',
             id
         });
     }
 
-    reupload = (id, file, group) => this.props.firebase.uploadTask(file, id, group)
+    reupload = (id, file, callback) => this.props.firebase.uploadTask(file, id, callback)
 
     renderMonitors() {
         const { uploads } = this.state;
@@ -41,7 +41,8 @@ class UploadMonitor extends Component {
             (uploads && uploads.size > 0) && uploads.forEach((value, key) => monitors.push(
                 <Monitor key={key} id={key} upload={value}
                     removeFun={this.removeMonitor}
-                    reuploadFun={this.reupload} />
+                    reuploadFun={this.reupload}
+                    enums={this.props.firebase.taskEnums} />
             ))
         }
         return monitors;

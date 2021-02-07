@@ -6,6 +6,8 @@ export const ACCOUNT = '/account';
 export const PASSWORD_FORGET = '/pw-forget';
 export const ADMIN = '/admin';
 export const ADMIN_DETAILS = '/admin/:id';
+export const DOCUMENTS = '/document';
+export const DOCUMENT = '/document/*';
 
 export const EVENT = '/event';
 export const EVENT_ADD = '/event/add';

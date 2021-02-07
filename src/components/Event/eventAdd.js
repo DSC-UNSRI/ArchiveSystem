@@ -44,7 +44,7 @@ class EventAdd extends Component {
         if (!loading && doc) {
             const events = { ...event, id: doc.id, datelocale: event.date }
             return (
-                <Redirect to={{
+                <Redirect exact to={{
                     pathname: `${ROUTES.EVENT}/${doc.id}`,
                     state: { event: events },
                 }} />

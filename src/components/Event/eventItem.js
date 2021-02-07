@@ -1,14 +1,13 @@
 import { Component } from 'react';
 
 import { withFirebase } from '../Firebase';
-
+import DocumentView from '../Document/documentView';
 class EventItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             loading: false,
-            images: [],
             event: null,
             ...props.location.state,
         };
@@ -16,18 +15,6 @@ class EventItem extends Component {
 
     componentDidMount() {
         this.setState({ loading: true });
-
-        this.props.firebase
-            .getDocumentation(this.props.match.params.id)
-            .list().then(result => {
-                this.setState({
-                    images: Array(result.items.length)
-                })
-                result.items.map((itm, index) => {
-                    this.setState(prev => prev.images[index] = { ref: itm, image: null })
-                    itm.getDownloadURL().then(url => this.setState(prev => prev.images[index].image = url))
-                })
-            })
 
         if (this.state.event) {
             this.setState({ loading: false });
@@ -60,18 +47,8 @@ class EventItem extends Component {
         return false;
     };
 
-    handleUpload = event => {
-        const images = Array.from(event.target.files);
-        if (images.length >= 0) {
-            images.forEach(img => {
-                this.props.firebase.uploadTask(img, `public/dokumentasi/${this.props.match.params.id}/${img.name}`, this.props.match.params.id);
-            });
-        }
-    }
-
     render() {
-        const { loading, event, images } = this.state;
-        //console.log(event.date)
+        const { loading, event } = this.state;
 
         return (
             <div>
@@ -99,25 +76,7 @@ class EventItem extends Component {
                                 }
                             }))}
                         />
-                        <div>
-                            <ul>
-                                {(images && images.length > 0) &&
-                                    images.map(itm =>
-                                        <li key={itm.ref.fullPath}>
-                                            <img src={itm.image || 'http://via.placeholder.com/120x120?text=loading'} />
-                                        </li>)}
-                            </ul>
-                            <input
-                                id="inputfile"
-                                type="file"
-                                onChange={this.handleUpload}
-                                multiple
-                                hidden
-                            />
-                            <label htmlFor="inputfile">
-                                <p>Choose File</p>
-                            </label>
-                        </div>
+                        <DocumentView match={{ url: `document/public/dokumentasi/${this.props.match.params.id}`, params: [`public/dokumentasi/${this.props.match.params.id}`] }} />
                         <button type="submit">Send</button>
                     </form>
                 }

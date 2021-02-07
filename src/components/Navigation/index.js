@@ -37,7 +37,12 @@ const NavigationAuth = ({ authUser }) => (
     )}
     {!!authUser.roles[ROLES.ADMIN] && (
       <li>
-        <Link to={ROUTES.EVENT}>Event</Link>
+        <Link to={ROUTES.EVENT}>Laporan</Link>
+      </li>
+    )}
+    {!!authUser.roles[ROLES.ADMIN] && (
+      <li>
+        <Link to={`${ROUTES.DOCUMENTS}/private`}>Arsip Dokumen</Link>
       </li>
     )}
     <li>

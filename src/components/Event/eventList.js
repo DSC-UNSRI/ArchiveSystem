@@ -67,18 +67,10 @@ class EventList extends Component {
                     <table>
                         <thead>
                             <tr>
-                                <th>
-                                    No.
-                  </th>
-                                <th>
-                                    Judul Laporan
-                  </th>
-                                <th>
-                                    Tanggal
-                  </th>
-                                <th>
-                                    Aksi
-                  </th>
+                                <th>No.</th>
+                                <th>Judul Laporan</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,8 +92,13 @@ class EventList extends Component {
                                                 state: { event },
                                             }}
                                         >
-                                            Details
-                          </Link>
+                                            Edit
+                                        </Link>
+                                        <button onClick={
+                                            e => this.props.firebase.event(event.id).delete()
+                                        }>
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ))}

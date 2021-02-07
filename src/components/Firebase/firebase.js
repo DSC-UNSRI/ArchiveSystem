@@ -2,7 +2,7 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import { createStore } from 'redux';
+import store from '../../redux';
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -30,7 +30,12 @@ class Firebase {
     this.googleProvider = new app.auth.GoogleAuthProvider();
 
     /* Upload Monitor */
-    this.uploadMonitor = createStore(this.uploadReducer);
+    this.store = store();
+
+    this.taskEnums = {
+      event: app.storage.TaskEvent,
+      states: app.storage.TaskState
+    }
   }
 
   // *** Auth API ***
@@ -98,41 +103,18 @@ class Firebase {
 
 
   // *** Upload API ***
-  uploadReducer = (state = new Map(), action) => {
-    switch (action.type) {
-      case 'add':
-        return state.set(action.id, action.data)
-      case 'remove':
-        state.delete(action.id)
-        return state
-      default:
-        return state
-    }
-  }
-
-  uploadTask = (upload, path, group = null) =>
-    this.uploadMonitor.dispatch({
+  uploadTask = (upload, path, callback) =>
+    this.store.dispatch({
       type: 'add',
       id: path,
       data: {
-        group,
+        callback,
         file: upload,
-        task: this.storage.ref(path).put(upload),
-        enums: {
-          event: app.storage.TaskEvent,
-          states: app.storage.TaskState
-        }
+        task: this.getStorage(path).put(upload),
       }
     });
 
-  getDocumentation = id => this.storage.ref(`public/dokumentasi/${id}`)
-
-
-
-  // *** Message API ***
-  message = uid => this.db.doc(`messages/${uid}`);
-
-  messages = () => this.db.collection('messages');
+  getStorage = path => this.storage.ref(path);
 }
 
 export default Firebase;
