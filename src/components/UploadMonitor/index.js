@@ -32,7 +32,7 @@ class UploadMonitor extends Component {
         });
     }
 
-    reupload = (id, file, callback) => this.props.firebase.uploadTask(file, id, callback)
+    reupload = (id, file) => this.props.firebase.uploadTask(file, id)
 
     renderMonitors() {
         const { uploads } = this.state;
@@ -42,7 +42,8 @@ class UploadMonitor extends Component {
                 <Monitor key={key} id={key} upload={value}
                     removeFun={this.removeMonitor}
                     reuploadFun={this.reupload}
-                    enums={this.props.firebase.taskEnums} />
+                    enums={this.props.firebase.taskEnums}
+                    callback={() => this.props.firebase.store.dispatch({ type: 'notifyStorage' })} />
             ))
         }
         return monitors;
@@ -59,6 +60,6 @@ class UploadMonitor extends Component {
     }
 }
 
-export {Monitor};
+export { Monitor };
 
 export default withFirebase(UploadMonitor);

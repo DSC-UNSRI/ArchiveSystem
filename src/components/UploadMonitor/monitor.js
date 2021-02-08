@@ -17,7 +17,7 @@ class Monitor extends React.Component {
 
     removeMonitor = () => this.props.removeFun(this.props.id)
 
-    reupload = () => this.props.reuploadFun(this.props.id, this.props.upload.file, this.props.upload.callback)
+    reupload = () => this.props.reuploadFun(this.props.id, this.props.upload.file)
 
     componentDidMount() {
         this.listener = this.props.upload.task.on(
@@ -38,7 +38,7 @@ class Monitor extends React.Component {
                     mode: this.props.enums.states.SUCCESS
                 });
                 this.listener()
-                this.props.upload.callback()
+                this.props.callback()
             }
         )
     }

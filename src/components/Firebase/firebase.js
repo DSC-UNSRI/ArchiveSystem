@@ -103,12 +103,11 @@ class Firebase {
 
 
   // *** Upload API ***
-  uploadTask = (upload, path, callback) =>
+  uploadTask = (upload, path) =>
     this.store.dispatch({
       type: 'add',
       id: path,
       data: {
-        callback,
         file: upload,
         task: this.getStorage(path).put(upload),
       }
@@ -117,10 +116,10 @@ class Firebase {
   getStorage = path => this.storage.ref(path);
 
   fetchStorage = (path, url) => {
+    this.store.dispatch({ type: 'storageLoading' })
     this.getStorage(path)
       .list().then(result => {
-        if (this.store.getState().storageURLReducer == url) {
-          this.store.dispatch({ type: 'storageLoading' })
+        if (this.store.getState().storageConfigReducer.URL == url) {
           this.store.dispatch({
             type: 'addFolder',
             data: result.prefixes

@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { uploadReducer, storageReducer, storageURLReducer } from './reducer'
+import { uploadReducer, storageReducer, storageConfigReducer } from './reducer'
 import thunk from "redux-thunk";
 
 export default () => {
@@ -7,7 +7,7 @@ export default () => {
         combineReducers({
             uploadReducer,
             storageReducer,
-            storageURLReducer
+            storageConfigReducer
         }),
         applyMiddleware(thunk)
     );

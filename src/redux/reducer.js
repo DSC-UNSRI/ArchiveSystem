@@ -30,13 +30,17 @@ const storageReducer = (state = { folders: [], files: [], loading: false }, acti
     }
 }
 
-const storageURLReducer = (state = '', action) => {
+const storageConfigReducer = (state = { URL: '', notify: false }, action) => {
     switch (action.type) {
-        case 'changeURL':
-            return action.data
+        case 'changeStorageURL':
+            return { ...state, URL: action.data }
+        case 'notifyStorage':
+            return { ...state, notify: true }
+        case 'notifyStorageOff':
+            return { ...state, notify: false }
         default:
             return state;
     }
 }
 
-export { uploadReducer, storageReducer, storageURLReducer }
+export { uploadReducer, storageReducer, storageConfigReducer }

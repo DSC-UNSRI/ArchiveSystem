@@ -15,7 +15,7 @@ class DocumentView extends Component {
     }
 
     getStorage = () => {
-        this.props.firebase.store.dispatch({ type: 'changeURL', data: this.props.match.params[0] })
+        this.props.firebase.store.dispatch({ type: 'changeStorageURL', data: this.props.match.params[0] })
         this.setState({ loading: true })
         this.props.firebase.fetchStorage(this.props.match.params[0], this.props.match.params[0])
     }
@@ -24,7 +24,7 @@ class DocumentView extends Component {
         const images = Array.from(event.target.files);
         if (images.length >= 0) {
             images.forEach(img => {
-                this.props.firebase.uploadTask(img, `${this.props.match.params[0]}/${img.name}`, this.getStorage);
+                this.props.firebase.uploadTask(img, `${this.props.match.params[0]}/${img.name}`);
             });
         }
     }
@@ -37,7 +37,11 @@ class DocumentView extends Component {
     componentDidMount() {
         const store = this.props.firebase.store;
         this.listener = store.subscribe(() => {
-            if (store.getState().storageURLReducer == this.props.match.params[0] && !store.getState().storageReducer.loading)
+            if (store.getState().storageConfigReducer.notify && store.getState().storageConfigReducer.URL == this.props.match.params[0]) {
+                this.props.firebase.store.dispatch({ type: 'notifyStorageOff' })
+                this.getStorage()
+            }
+            if (store.getState().storageConfigReducer.URL == this.props.match.params[0] && !store.getState().storageReducer.loading)
                 this.setState({ loading: false, ...store.getState().storageReducer })
         })
         this.getStorage()
@@ -84,6 +88,12 @@ class DocumentView extends Component {
                             files.map(itm =>
                                 <li key={itm.ref.fullPath}>
                                     {itm.ref.name}
+                                    <button onClick={
+                                        e => this.props.firebase.getStorage(itm.ref.fullPath).delete()
+                                            .then(value => this.props.firebase.store.dispatch({ type: 'notifyStorage' }))
+                                    }>
+                                        Delete
+                                    </button>
                                 </li>)}
                     </ul>
                 </div>
