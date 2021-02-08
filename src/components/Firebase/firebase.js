@@ -115,6 +115,28 @@ class Firebase {
     });
 
   getStorage = path => this.storage.ref(path);
+
+  fetchStorage = (path, url) => {
+    this.getStorage(path)
+      .list().then(result => {
+        if (this.store.getState().storageURLReducer == url) {
+          this.store.dispatch({ type: 'storageLoading' })
+          this.store.dispatch({
+            type: 'addFolder',
+            data: result.prefixes
+          })
+          this.store.dispatch({
+            type: 'addFiles',
+            data: result.items.map(itm => {
+              const file = { ref: itm, dataurl: null }
+              itm.getDownloadURL().then(url => file.dataurl = url)
+              return file;
+            })
+          })
+          this.store.dispatch({ type: 'storageFinish' })
+        }
+      })
+  }
 }
 
 export default Firebase;

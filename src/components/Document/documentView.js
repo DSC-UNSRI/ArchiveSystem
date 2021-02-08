@@ -15,19 +15,9 @@ class DocumentView extends Component {
     }
 
     getStorage = () => {
-        this.setState({ loading: true, files: [], folders: [] })
-        const urlNow = this.props.match.url;
-        this.props.firebase.getStorage(this.props.match.params[0])
-            .list().then(result => {
-                const files = []
-                result.items.map((itm, index) => {
-                    files[index] = { ref: itm, dataurl: null }
-                    itm.getDownloadURL().then(url => files[index].dataurl = url)
-                })
-                if (urlNow == this.props.match.url) {
-                    this.setState({ loading: false, folders: result.prefixes, files })
-                }
-            })
+        this.props.firebase.store.dispatch({ type: 'changeURL', data: this.props.match.params[0] })
+        this.setState({ loading: true })
+        this.props.firebase.fetchStorage(this.props.match.params[0], this.props.match.params[0])
     }
 
     handleUpload = event => {
@@ -39,11 +29,17 @@ class DocumentView extends Component {
         }
     }
 
-    componentWillUnmount(){
-        
+    componentWillUnmount() {
+        this.props.firebase.store.dispatch({ type: 'removeallStorage' })
+        this.listener()
     }
 
     componentDidMount() {
+        const store = this.props.firebase.store;
+        this.listener = store.subscribe(() => {
+            if (store.getState().storageURLReducer == this.props.match.params[0] && !store.getState().storageReducer.loading)
+                this.setState({ loading: false, ...store.getState().storageReducer })
+        })
         this.getStorage()
     }
 

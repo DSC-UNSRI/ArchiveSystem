@@ -13,12 +13,30 @@ const uploadReducer = (state = new Map(), action) => {
     }
 }
 
-const storageReducer = (state = [], action) => {
+const storageReducer = (state = { folders: [], files: [], loading: false }, action) => {
     switch (action.type) {
-        
+        case 'storageLoading':
+            return { ...state, loading: true }
+        case 'storageFinish':
+            return { ...state, loading: false }
+        case 'addFolder':
+            return { ...state, folders: action.data }
+        case 'addFiles':
+            return { ...state, files: action.data }
+        case 'removeallStorage':
+            return { folders: [], files: [] }
         default:
             return state
     }
 }
 
-export { uploadReducer, storageReducer }
+const storageURLReducer = (state = '', action) => {
+    switch (action.type) {
+        case 'changeURL':
+            return action.data
+        default:
+            return state;
+    }
+}
+
+export { uploadReducer, storageReducer, storageURLReducer }

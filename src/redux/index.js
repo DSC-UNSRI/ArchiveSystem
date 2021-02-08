@@ -1,12 +1,13 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { uploadReducer, storageReducer } from './reducer'
+import { uploadReducer, storageReducer, storageURLReducer } from './reducer'
 import thunk from "redux-thunk";
 
 export default () => {
     const store = createStore(
         combineReducers({
             uploadReducer,
-            storageReducer
+            storageReducer,
+            storageURLReducer
         }),
         applyMiddleware(thunk)
     );
