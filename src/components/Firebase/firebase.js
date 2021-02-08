@@ -127,8 +127,15 @@ class Firebase {
           this.store.dispatch({
             type: 'addFiles',
             data: result.items.map(itm => {
-              const file = { ref: itm, dataurl: null }
-              itm.getDownloadURL().then(url => file.dataurl = url)
+              const file = { ref: itm, dataurl: null, metadata: null }
+              itm.getMetadata().then(data => {
+                file.metadata = data
+                this.store.dispatch({ type: 'notifyStorage', data: 'updateStorage' })
+              })
+              itm.getDownloadURL().then(url => {
+                file.dataurl = url
+                this.store.dispatch({ type: 'notifyStorage', data: 'updateStorage' })
+              })
               return file;
             })
           })

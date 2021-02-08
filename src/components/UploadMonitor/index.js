@@ -43,7 +43,7 @@ class UploadMonitor extends Component {
                     removeFun={this.removeMonitor}
                     reuploadFun={this.reupload}
                     enums={this.props.firebase.taskEnums}
-                    callback={() => this.props.firebase.store.dispatch({ type: 'notifyStorage' })} />
+                    callback={() => this.props.firebase.store.dispatch({ type: 'notifyStorage', data: 'getStorage' })} />
             ))
         }
         return monitors;

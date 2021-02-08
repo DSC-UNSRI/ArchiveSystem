@@ -37,9 +37,15 @@ class DocumentView extends Component {
     componentDidMount() {
         const store = this.props.firebase.store;
         this.listener = store.subscribe(() => {
-            if (store.getState().storageConfigReducer.notify && store.getState().storageConfigReducer.URL == this.props.match.params[0]) {
-                this.props.firebase.store.dispatch({ type: 'notifyStorageOff' })
-                this.getStorage()
+            if (store.getState().storageConfigReducer.notify
+                && store.getState().storageConfigReducer.URL == this.props.match.params[0]) {
+                store.dispatch({ type: 'notifyStorageOff' })
+                switch (store.getState().storageConfigReducer.notifierType) {
+                    case 'updateStorage':
+                        return this.setState({ ...store.getState().storageReducer })
+                    case 'getStorage':
+                        return this.getStorage()
+                }
             }
             if (store.getState().storageConfigReducer.URL == this.props.match.params[0] && !store.getState().storageReducer.loading)
                 this.setState({ loading: false, ...store.getState().storageReducer })
@@ -83,19 +89,45 @@ class DocumentView extends Component {
                                     </Link>
                                 </li>)}
                     </ul>
-                    <ul>
-                        {(files && files.length > 0) &&
-                            files.map(itm =>
-                                <li key={itm.ref.fullPath}>
-                                    {itm.ref.name}
-                                    <button onClick={
-                                        e => this.props.firebase.getStorage(itm.ref.fullPath).delete()
-                                            .then(value => this.props.firebase.store.dispatch({ type: 'notifyStorage' }))
-                                    }>
-                                        Delete
-                                    </button>
-                                </li>)}
-                    </ul>
+                    {(files && files.length > 0) &&
+                        <table>
+                            <thead>
+                                <th>No.</th>
+                                <th>Nama File</th>
+                                <th>Tipe File</th>
+                                <th>Aksi</th>
+                            </thead>
+                            <tbody>
+                                {files.map((itm, index) =>
+                                    <tr key={itm.ref.fullPath}>
+                                        <td>{index + 1}</td>
+                                        <td>{itm.ref.name}</td>
+                                        <td>
+                                            {
+                                                (() => {
+                                                    if (itm.metadata != null) {
+                                                        const type = itm.metadata.contentType.split('/');
+                                                        switch (type[0]) {
+                                                            case 'image':
+                                                                return <img src={itm.dataurl} height='100' />
+                                                            default:
+                                                                return <p>{itm.metadata.contentType}</p>
+                                                        }
+                                                    }
+                                                })()
+                                            }
+                                        </td>
+                                        <td>
+                                            <button onClick={
+                                                e => this.props.firebase.getStorage(itm.ref.fullPath).delete()
+                                                    .then(value => this.props.firebase.store.dispatch({ type: 'notifyStorage', data: 'getStorage' }))
+                                            }>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>)}
+                            </tbody>
+                        </table>}
                 </div>
             }
         </div>
