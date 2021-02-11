@@ -1,14 +1,13 @@
 export const LANDING = '/';
-export const SIGN_UP = '/signup';
-export const SIGN_IN = '/signin';
 export const HOME = '/home';
-export const ACCOUNT = '/account';
-export const PASSWORD_FORGET = '/pw-forget';
-export const ADMIN = '/admin';
-export const ADMIN_DETAILS = '/admin/:id';
-export const DOCUMENTS = '/document';
-export const DOCUMENT = '/document/*';
-
 export const EVENT = '/event';
-export const EVENT_ADD = '/event/add';
-export const EVENT_DETAILS = '/event/:id';
+export const ACCOUNT = '/account';
+
+export const DASHBOARD = '/dashboard';
+export const ADMIN = '/dashboard/admin';
+export const ADMIN_DETAILS = '/dashboard/admin/:id';
+export const DOCUMENTS = '/dashboard/document';
+export const DOCUMENT = '/dashboard/document/*';
+export const AGENDA = '/dashboard/agenda';
+export const AGENDA_ADD = '/dashboard/agenda/add';
+export const AGENDA_DETAILS = '/dashboard/agenda/:id';

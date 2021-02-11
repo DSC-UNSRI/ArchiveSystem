@@ -13,12 +13,8 @@ const uploadReducer = (state = new Map(), action) => {
     }
 }
 
-const storageReducer = (state = { folders: [], files: [], loading: false }, action) => {
+const storageReducer = (state = { folders: [], files: []}, action) => {
     switch (action.type) {
-        case 'storageLoading':
-            return { ...state, loading: true }
-        case 'storageFinish':
-            return { ...state, loading: false }
         case 'addFolder':
             return { ...state, folders: action.data }
         case 'addFiles':
@@ -30,7 +26,13 @@ const storageReducer = (state = { folders: [], files: [], loading: false }, acti
     }
 }
 
-const storageConfigReducer = (state = { URL: '', notify: false, notifierType: '' }, action) => {
+const storageConfigReducer = (state = {
+    URL: '',
+    notify: false,
+    notifierType: '',
+    loading: false,
+    loadingType: ''
+}, action) => {
     switch (action.type) {
         case 'changeStorageURL':
             return { ...state, URL: action.data }
@@ -38,6 +40,10 @@ const storageConfigReducer = (state = { URL: '', notify: false, notifierType: ''
             return { ...state, notify: true, notifierType: action.data }
         case 'notifyStorageOff':
             return { ...state, notify: false }
+        case 'storageLoading':
+            return { ...state, loading: true, loadingType: action.data }
+        case 'storageFinish':
+            return { ...state, loading: false }
         default:
             return state;
     }

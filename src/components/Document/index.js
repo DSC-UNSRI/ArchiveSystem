@@ -9,24 +9,31 @@ import * as ROLES from '../../constants/roles';
 import * as ROUTES from '../../constants/routes';
 
 const DocumentPage = () => (
-        <div>
-            <h1>Arsip Dokumen</h1>
+    <div className='main-content'>
+        <div className='left-side'>
             <p>
                 <Link to={`${ROUTES.DOCUMENTS}/private`}>
-                    private
+                    <button className='button-add'>
+                        <p><b>private</b></p>
+                        <span className="material-icons">arrow_right</span>
+                    </button>
                 </Link>
             </p>
             <p>
                 <Link to={`${ROUTES.DOCUMENTS}/public`}>
-                    public
+                    <button className='button-add'>
+                        <p><b>public</b></p>
+                        <span className="material-icons">arrow_right</span>
+                    </button>
                 </Link>
             </p>
-            <Switch>
-                <Redirect exact from={`${ROUTES.DOCUMENTS}/`} to={`${ROUTES.DOCUMENTS}/private`} />
-                <Route exact path={ROUTES.DOCUMENT} component={documentView} />
-            </Switch>
         </div>
-    );
+        <Switch>
+            <Redirect exact from={`${ROUTES.DOCUMENTS}/`} to={`${ROUTES.DOCUMENTS}/private`} />
+            <Route exact path={ROUTES.DOCUMENT} component={documentView} />
+        </Switch>
+    </div>
+);
 
 const condition = authUser =>
     authUser && !!authUser.roles[ROLES.ADMIN];

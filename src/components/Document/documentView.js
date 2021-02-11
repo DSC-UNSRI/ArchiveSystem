@@ -47,7 +47,9 @@ class DocumentView extends Component {
                         return this.getStorage()
                 }
             }
-            if (store.getState().storageConfigReducer.URL == this.props.match.params[0] && !store.getState().storageReducer.loading)
+            if (store.getState().storageConfigReducer.URL == this.props.match.params[0]
+                && !store.getState().storageConfigReducer.loading
+                && store.getState().storageConfigReducer.loadingType == 'storage')
                 this.setState({ loading: false, ...store.getState().storageReducer })
         })
         this.getStorage()
@@ -61,73 +63,52 @@ class DocumentView extends Component {
     render() {
         const { loading, files, folders } = this.state;
 
-        return <div>
-            <input
-                id="inputfile"
-                type="file"
-                onChange={this.handleUpload}
-                multiple
-                hidden
-            />
-            <label htmlFor="inputfile">
-                <p>Choose File</p>
-            </label>
-            <div>{this.props.match.params[0]}</div>
+        return <div className='right-side'>
+            <div className='nav-right-side'>
+                <input
+                    id="inputfile"
+                    type="file"
+                    onChange={this.handleUpload}
+                    multiple
+                    hidden
+                />
+                <label htmlFor="inputfile">
+                    <p>Choose File</p>
+                </label>
+                <div>{this.props.match.params[0]}</div>
+            </div>
             {loading
                 ? <div>Loading...</div>
-                : <div>
-                    <ul>
+                : <div className='content-right-side'>
+                    <div className='storage-container-content'>
                         {(folders && folders.length > 0) &&
                             folders.map(itm =>
-                                <li key={itm.fullPath}>
-                                    <Link to={{
-                                        pathname: `${this.props.match.url.endsWith('/')
-                                            ? this.props.match.url
-                                            : this.props.match.url + '/'}${itm.name}`
-                                    }}>
-                                        {itm.name}
-                                    </Link>
-                                </li>)}
-                    </ul>
+                                <Link key={itm.fullPath} to={{
+                                    pathname: `${this.props.match.url.endsWith('/')
+                                        ? this.props.match.url
+                                        : this.props.match.url + '/'}${itm.name}`
+                                }}>
+                                    <button className='button-add'><p><b>{itm.name}</b></p></button>
+                                </Link>
+                            )}
+                    </div>
                     {(files && files.length > 0) &&
-                        <table>
-                            <thead>
-                                <th>No.</th>
-                                <th>Nama File</th>
-                                <th>Tipe File</th>
-                                <th>Aksi</th>
-                            </thead>
-                            <tbody>
-                                {files.map((itm, index) =>
-                                    <tr key={itm.ref.fullPath}>
-                                        <td>{index + 1}</td>
-                                        <td>{itm.ref.name}</td>
-                                        <td>
-                                            {
-                                                (() => {
-                                                    if (itm.metadata != null) {
-                                                        const type = itm.metadata.contentType.split('/');
-                                                        switch (type[0]) {
-                                                            case 'image':
-                                                                return <img src={itm.dataurl} height='100' />
-                                                            default:
-                                                                return <p>{itm.metadata.contentType}</p>
-                                                        }
-                                                    }
-                                                })()
-                                            }
-                                        </td>
-                                        <td>
-                                            <button onClick={
-                                                e => this.props.firebase.getStorage(itm.ref.fullPath).delete()
-                                                    .then(value => this.props.firebase.store.dispatch({ type: 'notifyStorage', data: 'getStorage' }))
-                                            }>
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>)}
-                            </tbody>
-                        </table>}
+                        <div className='storage-container-content'>
+                            {files.map(itm =>
+                                <div className='storage-content' key={itm.ref.fullPath}>
+                                    <a href={itm.dataurl}>
+                                        <div className='leading' style={{ backgroundImage: `url(${itm.metadata.contentType.split('/')[0] == 'image' ? itm.dataurl : 'http://via.placeholder.com/160x160?text=image'})` }}></div>
+                                        <p>{itm.ref.name}</p>
+                                    </a>
+                                    <button onClick={
+                                        e => this.props.firebase.getStorage(itm.ref.fullPath).delete()
+                                            .then(value => this.props.firebase.store.dispatch({ type: 'notifyStorage', data: 'getStorage' }))
+                                    }>
+                                        Delete
+                                    </button>
+                                    <p>{itm.metadata.contentType}</p>
+                                </div>)}
+                        </div>}
                 </div>
             }
         </div>

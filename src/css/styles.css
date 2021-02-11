@@ -1,0 +1,413 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    color: #333;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  height: 100%;
+}
+
+/* ---------------------------------------- NAVBAR ------------------*/
+.navbar{
+    width: 100%;
+    box-shadow: 0 5px 5px -5px #333;
+    background-color: #F0F6FF;
+}
+
+
+
+.container-navbar{
+    display: grid;
+    grid-template-columns: 89px 220px 1fr;
+    height: 90px;
+    
+}
+
+.navbar .logo{
+    height: 90px;
+    background-color: #AAC6EB;
+    width: 100%;
+}
+
+.navbar .logo .image-logo{
+    height: 70px;
+    background-image: url("../asset/img/logodsc.png");
+    background-size: cover;
+    width: 70px;
+    margin: 10px auto;
+}
+
+.navbar .menu{
+    height: 90px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 0.5fr;
+}
+
+.navbar .menu p{
+    margin-top: 30px;
+    font-size: 20px;
+}
+
+.navbar .menu span{
+    margin-top: 30px;
+}
+
+.navbar .container-navbar .menu .dot{
+    height: 50px;
+    width: 50px;
+    background-color: #45A4E9;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 18px;
+}
+
+/* ---------------------------------------- NAVBAR ------------------*/
+
+
+/* ---------------------------------------- MAIN ------------------*/
+
+.main {
+    font-size: 28px; /* Increased text to enable scrolling */
+    margin-top: 0;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 89px 1fr;
+}
+
+
+/* ---------------------------------------- SIDEBAR ------------------*/
+
+.sidebar{
+    padding: 20px;
+    box-shadow: 5px 0 5px -5px #333;
+}
+
+.sidebar .container{
+    margin-top: 100px;
+}
+
+.sidebar .dot{
+        height: 50px;
+        width: 50px;
+        background-color: #45A4E9;
+        border-radius: 50%;
+        display: inline-block;
+}
+
+.sidebar button{
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    margin-top: 40px;
+    background-color: #45A4E9;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    box-shadow: 0 5px 5px -5px #333;
+    outline: none;
+}
+
+
+.sidebar .container .button-menu:active{
+    border: 1px solid white;
+    border-radius: 50%;
+}
+
+.sidebar button span{
+    color: #ffff;
+    font-size: 30px;
+    padding: 6px;
+}
+
+/* ---------------------------------------- SIDEBAR ------------------*/
+
+/* ---------------------------------------- MAIN CONTENT ------------------*/
+
+.main-content{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+}
+
+/* ---------------------------------------- RIGHT SIDE ------------------*/
+.right-side{
+    min-height: 100vh;
+}
+
+/* ---------------------------------------- NAV RIGHT SIDE ------------------*/
+.right-side .nav-right-side {
+    height: 10vh;
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+}
+
+.right-side .nav-right-side .child {
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+}
+
+.right-side .nav-right-side .child p {
+    padding: 15px 10px;
+}
+.right-side .nav-right-side .child span {
+    padding-top: 9px ;
+}
+
+.right-side .nav-right-side .inputan {
+    margin-top: 10px;
+    width: 488px;
+    height: 38px;
+    background-color: #EAEAEA;
+    border-radius: 5px;
+    box-shadow: 0 5px 5px -5px #333;
+    display: grid;
+    grid-template-columns: 0.1fr 1fr 0.1fr;
+}
+
+.right-side .nav-right-side .inputan input {
+    height: 35px;
+    border: none;
+    background-color: #EAEAEA;  
+    outline: none;
+
+}
+
+/* ---------------------------------------- NAV RIGHT SIDE ------------------*/
+
+/* ---------------------------------------- CONTENT RIGHT SIDE ------------------*/
+.right-side .content-right-side {
+    height: 100vh;
+    overflow: auto;
+}
+
+.right-side .content-right-side .container-content{
+    height: 40vh;
+}
+
+.right-side .content-right-side .storage-container-content{
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.right-side .content-right-side .storage-container-content .storage-content .leading{
+    height: 120px;
+    width: 100%;
+    background: center #333 no-repeat;;
+    background-size: cover;
+}
+
+.right-side .content-right-side .storage-container-content .storage-content p{
+    font-size: medium;
+}
+
+.right-side .content-right-side .container-content .top-content{
+    height: 5vh;
+    background-color: #F0F6FF;
+}
+
+.right-side .content-right-side .container-content .top-content P{
+    font-size: 15px;
+    padding: 10px ;
+}
+
+.right-side .content-right-side .container-content .date-content{
+    border: 0.2px solid #aaa;
+    height: 8.2vh;
+    display: grid;
+    grid-template-columns: 0.2fr 1fr 1fr 1fr 0.5fr;
+}
+
+.right-side .content-right-side .container-content .date-content .checkbox{
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    margin: 10px auto;
+}
+
+.right-side .content-right-side .container-content .date-content .jam{
+    width: 100%;
+}
+
+.right-side .content-right-side .container-content .date-content .jam p{
+    margin: 15px auto;
+    font-size: 0.5em;
+    color: #595959;
+    text-align: center;
+}
+.right-side .content-right-side .container-content .date-content .title{
+    padding-top: 13px;
+}
+.right-side .content-right-side .container-content .date-content .title p{
+    font-size: 0.5em;
+    color: black;
+    text-align: center;
+}
+
+.right-side .content-right-side .container-content .date-content .link{
+    width: 100%;
+}
+.right-side .content-right-side .container-content .date-content .link p{
+    margin: 16px auto;
+    font-size: 0.4em;
+    color: black;
+    text-align: center;
+}
+
+.right-side .content-right-side .container-content .date-content .action{
+    width: 100%;
+    margin: 10px 20px auto;
+    font-size: 20px;
+}
+
+.right-side .content-right-side .container-content .date-content .action button{
+    background-color: white;
+    border: none;
+    color: #aaa;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 5px auto;
+    outline: none;
+}
+
+
+.right-side .content-right-side .container-content .date-content .action button span{
+    font-size: 30px;
+}
+
+/* ---------------------------------------- CONTENT RIGHT SIDE ------------------*/
+
+
+/* ---------------------------------------- RIGHT SIDE ------------------*/
+
+/* ---------------------------------------- LEGT SIDE ------------------*/
+
+
+.left-side{
+    min-height: 100vh;
+    width: 100%;
+    padding: 20px;
+}
+
+
+
+
+ .button-add{
+    height: 50px;
+    width: 100%;
+    border-radius: 12px;
+    padding: 13px 0 ;
+    cursor: pointer;
+    margin-top: 20px;
+    outline: none;
+    background-color: #EA4335;
+    border: none;
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    box-shadow: 0 5px 5px -5px #333;
+}
+
+ .button-add p {
+    color: #ffff;
+    font-size: 20px;
+}
+
+ .button-add span {
+    color: #ffff;
+    font-size: 20px;
+}
+ .button-add:active{
+    border: 1px solid white;
+}
+
+/* ---------------------------------------- LEGT SIDE ------------------*/
+
+/* ---------------------------------------- MAIN CONTENT ------------------*/
+
+/* ---------------------------------------- MAIN ------------------*/
+
+
+/*--------------------------------------------CALENDER-------------------*/
+.left-side .calender{
+    height: 220px;
+    width: 100%;
+    border-radius: 8%;
+    padding: 30px;
+    background-color: #F0F6FF;
+    box-shadow: 0 5px 5px -5px #333;
+}
+.left-side .calender .top  p{
+    font-size: 20px;
+}
+.left-side .calender .top  button span{
+    font-size: 10px;
+}
+.left-side .calender .top  button {
+    cursor: pointer;
+    outline: none;
+    background-color: #F0F6FF;
+    border: none;
+}
+
+.left-side .calender .top {
+    display: grid;
+    grid-template-columns: 1fr 0.1fr 0.1fr;
+    margin-bottom: 20px;
+}
+
+.left-side .calender .month  {
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.left-side .calender .month  p{
+    font-size: 10px;
+}
+
+.left-side .calender .date  {
+    margin-bottom: 5px;
+    text-align: center;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.left-side .calender .date  p{
+    font-size: 10px;
+}
+
+/*--------------------------------------------CALENDER-------------------*/
+/*--------------------------- custom scroll bar*/
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+
+
+/*--------------------------- custom scroll bar*/
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}

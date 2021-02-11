@@ -6,7 +6,7 @@ import { consumeAuthentication } from '../Session';
 import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 
-class EventAdd extends Component {
+class AgendaAdd extends Component {
     constructor(props) {
         super(props);
 
@@ -14,7 +14,10 @@ class EventAdd extends Component {
             loading: false,
             event: {
                 name: 'Tidak Ada Judul',
-                date: new Date().toISOString().split(':')[0] + ':00:00'
+                date: new Date().toISOString().split(':')[0] + ':00:00',
+                registrationLink: '',
+                description: '',
+                progress: false
             },
             doc: null
         };
@@ -26,6 +29,7 @@ class EventAdd extends Component {
             name: this.state.event.name,
             date: this.props.firebase.timestamp.fromDate(new Date(this.state.event.date)),
             createdAt: this.props.firebase.fieldValue.serverTimestamp(),
+            progress: this.state.event.progress
         }).then(doc => {
             this.props.firebase.eventMeta(doc.id).set({
                 userId: this.props.authUser.uid,
@@ -45,7 +49,7 @@ class EventAdd extends Component {
             const events = { ...event, id: doc.id, datelocale: event.date }
             return (
                 <Redirect exact to={{
-                    pathname: `${ROUTES.EVENT}/${doc.id}`,
+                    pathname: `${ROUTES.AGENDA}/${doc.id}`,
                     state: { event: events },
                 }} />
             );
@@ -61,4 +65,4 @@ class EventAdd extends Component {
 
 export default compose(
     withFirebase,
-    consumeAuthentication)(EventAdd);
+    consumeAuthentication)(AgendaAdd);

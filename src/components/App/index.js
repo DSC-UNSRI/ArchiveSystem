@@ -5,29 +5,22 @@ import Navigation from '../Navigation';
 import LandingPage from '../Landing';
 import HomePage from '../Home';
 import AccountPage from '../Account';
-import AdminPage from '../Admin';
-import EventPage from '../Event';
-import Document from '../Document';
 import UploadMonitor from '../UploadMonitor';
+import Dashboard from '../Dashboard';
 
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
 
 const App = () => (
   <Router>
-    <div>
-      <Navigation />
+    <Navigation />
 
-      <hr />
-
-      <Route exact path={ROUTES.LANDING} component={LandingPage} />
-      <Route path={ROUTES.HOME} component={HomePage} />
-      <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-      <Route path={ROUTES.ADMIN} component={AdminPage} />
-      <Route path={ROUTES.EVENT} component={EventPage} />
-      <Route path={ROUTES.DOCUMENTS} component={Document} />
-      <UploadMonitor />
-    </div>
+    <hr />
+    <Route exact path={ROUTES.LANDING} component={LandingPage} />
+    <Route path={ROUTES.HOME} component={HomePage} />
+    <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+    <Route path={ROUTES.DASHBOARD} component={Dashboard} />
+    <UploadMonitor />
   </Router>
 );
 

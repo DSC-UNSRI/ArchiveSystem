@@ -115,34 +115,26 @@ class Firebase {
 
   getStorage = path => this.storage.ref(path);
 
-  fetchStorage = (path, url) => {
-    this.store.dispatch({ type: 'storageLoading' })
-    this.getStorage(path)
-      .list().then(result => {
-        if (this.store.getState().storageConfigReducer.URL == url) {
-          this.store.dispatch({
-            type: 'addFolder',
-            data: result.prefixes
-          })
-          this.store.dispatch({
-            type: 'addFiles',
-            data: result.items.map(itm => {
-              const file = { ref: itm, dataurl: null, metadata: null }
-              itm.getMetadata().then(data => {
-                file.metadata = data
-                this.store.dispatch({ type: 'notifyStorage', data: 'updateStorage' })
-              })
-              itm.getDownloadURL().then(url => {
-                file.dataurl = url
-                this.store.dispatch({ type: 'notifyStorage', data: 'updateStorage' })
-              })
-              return file;
-            })
-          })
-          this.store.dispatch({ type: 'storageFinish' })
-        }
+  fetchStorage = async (path, url) => {
+    this.store.dispatch({ type: 'storageLoading', data: 'storage' })
+    const result = await this.getStorage(path).list()
+    const filedata = await Promise.all(result.items.map(async ref =>
+      await Promise.all([ref.getMetadata(), ref.getDownloadURL()])
+        .then(([metadata, dataurl]) => ({ ref, dataurl, metadata }))
+        .catch(err => ({ ref, dataurl: null, metadata: null }))))
+    if (this.store.getState().storageConfigReducer.URL == url) {
+      this.store.dispatch({
+        type: 'addFolder',
+        data: result.prefixes
       })
+      this.store.dispatch({
+        type: 'addFiles',
+        data: filedata
+      })
+      this.store.dispatch({ type: 'storageFinish' })
+    }
   }
 }
+
 
 export default Firebase;
